@@ -1,1052 +1,1524 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STT + TTS — 152023013 Cleosa Zelda Avrillya</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-<style>
-/* ══════════════════════════════════════════════════════════
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STT + TTS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;900&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ══════════════════════════════════════════════════════════
    DESIGN SYSTEM — "PREMIUM FUCHSIA LAB" AESTHETIC
    Professional Modern Dark / Sophisticated Pink Tech Feel
    ══════════════════════════════════════════════════════════ */
-:root {
-  --bg:        #0d0b0f;
-  --surface:   #15121a;
-  --surface2:  #1d1924;
-  --border:    #2d2438;
-  --accent:    #ff2a85; /* Neon Pink Utama */
-  --accent2:   #f472b6; /* Soft Rose Pink */
-  --accent3:   #a855f7; /* Royal Purple Accent */
-  --green:     #10b981;
-  --red:       #ef4444;
-  --text:      #f3f1f5;
-  --muted:     #8b8098;
-  --font-mono: 'Space Mono', monospace;
-  --font-sans: 'Outfit', sans-serif;
-  --glow:      0 0 25px rgba(255, 42, 133, 0.25);
-  --glow-big:  0 0 40px rgba(255, 42, 133, 0.4);
-  --radius:    16px;
-}
+    :root {
+      --bg: #0d0b0f;
+      --surface: #15121a;
+      --surface2: #1d1924;
+      --border: #2d2438;
+      --accent: #ff2a85;
+      /* Neon Pink Utama */
+      --accent2: #f472b6;
+      /* Soft Rose Pink */
+      --accent3: #a855f7;
+      /* Royal Purple Accent */
+      --green: #10b981;
+      --red: #ef4444;
+      --text: #f3f1f5;
+      --muted: #8b8098;
+      --font-mono: 'Space Mono', monospace;
+      --font-sans: 'Outfit', sans-serif;
+      --glow: 0 0 25px rgba(255, 42, 133, 0.25);
+      --glow-big: 0 0 40px rgba(255, 42, 133, 0.4);
+      --radius: 16px;
+    }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-  font-family: var(--font-sans);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+    html {
+      scroll-behavior: smooth;
+    }
 
-/* ─── noise texture overlay ─── */
-body::before {
-  content: "";
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 0; opacity: .4;
-}
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-/* ─── dynamic tech grid background ─── */
-body::after {
-  content: "";
-  position: fixed; inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 42, 133, .015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 42, 133, .015) 1px, transparent 1px);
-  background-size: 50px 50px;
-  pointer-events: none; z-index: 0;
-}
+    /* ─── noise texture overlay ─── */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: .4;
+    }
 
-/* ─── HEADER ─── */
-header {
-  position: relative; z-index: 10;
-  border-bottom: 1px solid var(--border);
-  background: rgba(13, 11, 15, 0.8);
-  backdrop-filter: blur(16px);
-  padding: 0 2rem;
-}
-.header-inner {
-  max-width: 1200px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 70px;
-}
-.logo {
-  font-family: var(--font-mono);
-  font-size: .9rem; letter-spacing: .15em;
-  font-weight: 700;
-  color: var(--accent);
-}
-.logo span { color: var(--muted); font-weight: 400; }
-.id-badge {
-  font-family: var(--font-mono);
-  font-size: .75rem; color: var(--text);
-  border: 1px solid var(--border);
-  padding: 6px 16px; border-radius: 30px;
-  background: rgba(29, 25, 36, 0.6);
-  backdrop-filter: blur(4px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
-}
-.id-badge strong { color: var(--accent2); }
+    /* ─── dynamic tech grid background ─── */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 42, 133, .015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 42, 133, .015) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-/* ─── MAIN ─── */
-main {
-  position: relative; z-index: 5;
-  max-width: 1200px; margin: 0 auto;
-  padding: 2.5rem 2rem 4rem;
-}
+    /* ─── HEADER ─── */
+    header {
+      position: relative;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+      background: rgba(13, 11, 15, 0.8);
+      backdrop-filter: blur(16px);
+      padding: 0 2rem;
+    }
 
-/* ─── HERO ─── */
-.hero {
-  text-align: center;
-  padding: 2.5rem 0 3rem;
-}
-.hero-label {
-  font-family: var(--font-mono);
-  font-size: .75rem; letter-spacing: .35em;
-  color: var(--accent2); text-transform: uppercase;
-  margin-bottom: 1.2rem;
-  display: flex; align-items: center; justify-content: center; gap: .75rem;
-}
-.hero-label::before, .hero-label::after {
-  content: ""; flex: 1; max-width: 60px;
-  height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); opacity: .6;
-}
-.hero h1 {
-  font-size: clamp(2.2rem, 6vw, 3.8rem);
-  font-weight: 900; line-height: 1.1;
-  letter-spacing: -1px;
-  background: linear-gradient(135deg, #ffffff 10%, var(--accent2) 60%, var(--accent) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.hero-sub {
-  color: var(--muted); font-size: 1rem; margin-top: 0.8rem;
-}
-.hero-sub strong { color: var(--text); font-weight: 500; }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
 
-/* ─── TABS ─── */
-.tabs {
-  display: flex; gap: .3rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 2px;
-}
-.tab-btn {
-  font-family: var(--font-sans); font-size: .95rem; font-weight: 500;
-  background: none; border: none; cursor: pointer;
-  color: var(--muted); padding: .9rem 1.75rem;
-  border-bottom: 3px solid transparent;
-  border-radius: 8px 8px 0 0;
-  transition: all .25s ease;
-  display: flex; align-items: center; gap: .5rem;
-}
-.tab-btn:hover { color: var(--accent2); background: rgba(255,255,255,0.02); }
-.tab-btn.active { 
-  color: var(--accent); 
-  border-bottom-color: var(--accent);
-  background: linear-gradient(to top, rgba(255, 42, 133, 0.05), transparent);
-}
-.tab-icon { font-size: 1.1rem; }
-.tab-panel { display: none; animation: fadeIn 0.4s ease-in-out; }
-.tab-panel.active { display: block; }
+    .logo {
+      font-family: var(--font-mono);
+      font-size: .9rem;
+      letter-spacing: .15em;
+      font-weight: 700;
+      color: var(--accent);
+    }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+    .logo span {
+      color: var(--muted);
+      font-weight: 400;
+    }
 
-/* ─── CARDS ─── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.02);
-}
-.card-title {
-  font-family: var(--font-mono); font-size: .75rem;
-  letter-spacing: .25em; color: var(--accent2);
-  text-transform: uppercase; margin-bottom: 1.5rem;
-  display: flex; align-items: center; gap: .75rem;
-  font-weight: 700;
-}
-.card-title::after {
-  content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent);
-}
+    .id-badge {
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 16px;
+      border-radius: 30px;
+      background: rgba(29, 25, 36, 0.6);
+      backdrop-filter: blur(4px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
 
-/* ─── RECORDING GRID ─── */
-.rec-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
-  gap: .8rem;
-  margin-top: 1rem;
-}
-.rec-word-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem .5rem;
-  cursor: pointer;
-  transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex; flex-direction: column;
-  align-items: center; gap: .4rem;
-  position: relative; overflow: hidden;
-}
-.rec-word-btn:hover {
-  border-color: var(--accent);
-  transform: translateY(-3px);
-  box-shadow: var(--glow);
-}
-.rec-word-btn.has-template {
-  border-color: rgba(16, 185, 129, 0.4);
-  background: rgba(16, 185, 129, .04);
-}
-.rec-word-btn.has-template .rec-word-label { color: var(--text); }
-.rec-word-btn.recording {
-  border-color: var(--accent);
-  background: rgba(255, 42, 133, .08);
-  animation: pulse-rec .6s infinite alternate;
-}
-@keyframes pulse-rec {
-  from { box-shadow: 0 0 0 0 rgba(255, 42, 133, 0.4); }
-  to   { box-shadow: 0 0 0 10px rgba(255, 42, 133, 0); }
-}
-.rec-word-label {
-  font-weight: 700; font-size: 1rem; color: var(--muted);
-  transition: color .2s;
-}
-.rec-word-symbol {
-  font-family: var(--font-mono); font-size: .8rem; color: var(--muted); opacity: 0.7;
-}
-.rec-word-count {
-  font-family: var(--font-mono); font-size: .7rem;
-  color: var(--text); min-height: 1rem;
-}
-.rec-word-btn.has-template .rec-word-count::before { content: "✓ "; }
+    .id-badge strong {
+      color: var(--accent2);
+    }
 
-/* ─── MIC BUTTON (big) ─── */
-.mic-section {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 1.5rem; padding: 1.5rem 0;
-}
-.mic-btn {
-  width: 110px; height: 110px; border-radius: 50%;
-  border: 3px solid var(--border);
-  background: var(--surface2);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.8rem;
-  transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-  color: var(--text);
-}
-.mic-btn:hover { 
-  transform: scale(1.05); 
-  border-color: var(--accent2);
-  box-shadow: var(--glow);
-  color: var(--accent);
-}
-.mic-btn.recording {
-  border-color: var(--accent);
-  background: rgba(255, 42, 133, 0.1);
-  box-shadow: var(--glow-big);
-  animation: pulse-mic 1.2s infinite ease-in-out;
-}
-@keyframes pulse-mic {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50%      { transform: scale(1.08); opacity: 0.9; }
-}
-.mic-label {
-  font-family: var(--font-mono); font-size: .85rem;
-  color: var(--muted); text-align: center; min-height: 1.5rem;
-  font-weight: 500;
-}
-.mic-label.active { color: var(--accent); }
+    /* ─── MAIN ─── */
+    main {
+      position: relative;
+      z-index: 5;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 4rem;
+    }
 
-/* ─── WAVEFORM ─── */
-.waveform-wrap {
-  background: rgba(13, 11, 15, 0.6);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: .6rem;
-  margin-top: .5rem;
-  box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
-}
-canvas#waveCanvas, canvas#sttWaveCanvas { display: block; width: 100%; height: 60px; }
+    /* ─── HERO ─── */
+    .hero {
+      text-align: center;
+      padding: 2.5rem 0 3rem;
+    }
 
-/* ─── RESULT BOX ─── */
-.result-box {
-  background: rgba(13, 11, 15, 0.4);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.75rem;
-  min-height: 100px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: .6rem;
-  transition: all .3s;
-}
-.result-box.success { border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.02); }
-.result-box.error   { border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.02); }
-.result-word {
-  font-size: 2.6rem; font-weight: 900;
-  background: linear-gradient(135deg, #ffffff, var(--accent2), var(--accent));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-align: center;
-  letter-spacing: -0.5px;
-  word-wrap: break-word;
-}
-.result-symbol {
-  font-size: 2.2rem; font-family: var(--font-mono); color: var(--text); opacity: 0.9; text-align: center;
-}
-.result-conf {
-  font-family: var(--font-mono); font-size: .8rem; color: var(--muted);
-}
-.confidence-bar {
-  width: 100%; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; margin-top: .2rem;
-}
-.confidence-fill {
-  height: 100%; background: linear-gradient(90deg, var(--accent3), var(--accent));
-  border-radius: 3px; transition: width .6s cubic-bezier(0.4, 0, 0.2, 1);
-}
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      letter-spacing: .35em;
+      color: var(--accent2);
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .75rem;
+    }
 
-/* ─── TTS SECTION ─── */
-.tts-input-row {
-  display: flex; gap: .75rem; align-items: stretch;
-}
-.tts-input {
-  flex: 1;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 12px; padding: .85rem 1.25rem;
-  font-family: var(--font-sans); font-size: 1rem; color: var(--text);
-  outline: none; transition: border-color .25s;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-}
-.tts-input:focus { border-color: var(--accent2); }
-.tts-input::placeholder { color: var(--muted); opacity: 0.6; }
+    .hero-label::before,
+    .hero-label::after {
+      content: "";
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent));
+      opacity: .6;
+    }
 
-/* Buttons */
-.btn {
-  font-family: var(--font-sans); font-weight: 600;
-  border: none; border-radius: 12px; cursor: pointer;
-  padding: .85rem 1.75rem; font-size: .95rem;
-  transition: all .2s ease;
-  display: inline-flex; align-items: center; justify-content: center;
-}
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #ffffff;
-  box-shadow: 0 4px 15px rgba(255, 42, 133, 0.3);
-}
-.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255, 42, 133, 0.4); }
-.btn-secondary {
-  background: var(--surface2); color: var(--text);
-  border: 1px solid var(--border);
-}
-.btn-secondary:hover { border-color: var(--accent2); color: var(--accent2); background: rgba(255,255,255,0.01); }
-.btn-danger {
-  background: rgba(239, 68, 68, 0.1); color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  font-size: .8rem; padding: .5rem 1rem; border-radius: 8px;
-}
-.btn-danger:hover { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; }
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #ffffff 10%, var(--accent2) 60%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-/* Quick TTS chips */
-.tts-chips {
-  display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.25rem;
-}
-.chip {
-  font-family: var(--font-sans); font-size: .8rem; font-weight: 500;
-  border: 1px solid var(--border); border-radius: 30px;
-  padding: 6px 14px; cursor: pointer;
-  background: var(--surface2); color: var(--muted);
-  transition: all .2s;
-}
-.chip:hover { border-color: var(--accent2); color: var(--text); background: rgba(255, 42, 133, 0.05); }
+    .hero-sub {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: 0.8rem;
+    }
 
-/* word queue */
-.word-queue {
-  display: flex; flex-wrap: wrap; gap: .5rem;
-  margin-top: 1.25rem; min-height: 2.5rem;
-}
-.word-chip {
-  font-family: var(--font-mono); font-size: .8rem; font-weight: 500;
-  padding: 6px 14px; border-radius: 30px;
-  background: rgba(255, 114, 182, 0.05); border: 1px solid var(--border);
-  color: var(--muted);
-  transition: all .3s ease;
-}
-.word-chip.playing {
-  background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #ffffff;
-  border-color: transparent;
-  box-shadow: var(--glow);
-}
-.word-chip.missing {
-  background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.4);
-  color: #f87171;
-}
-.word-chip.done {
-  background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.4);
-  color: #34d399;
-}
+    .hero-sub strong {
+      color: var(--text);
+      font-weight: 500;
+    }
 
-/* ─── VOCAB TABLE ─── */
-.vocab-table {
-  width: 100%; border-collapse: collapse; font-size: .9rem;
-  font-family: var(--font-sans);
-}
-.vocab-table th {
-  text-align: left; padding: 1rem .75rem;
-  color: var(--muted); font-weight: 600;
-  border-bottom: 2px solid var(--border);
-  text-transform: uppercase; font-size: .75rem; letter-spacing: .1em;
-}
-.vocab-table td {
-  padding: 1rem .75rem; border-bottom: 1px solid rgba(255,255,255,0.02);
-  vertical-align: middle;
-}
-.vocab-table tr:hover td { background: rgba(255,255,255,0.01); }
-.badge-ok { color: var(--green); font-weight: 500; }
-.badge-no { color: var(--muted); opacity: 0.6; }
-.badge-count {
-  font-family: var(--font-mono); font-size: .75rem; font-weight: 700;
-  background: rgba(255, 42, 133, 0.1); color: var(--accent2);
-  padding: 3px 10px; border-radius: 12px;
-  border: 1px solid rgba(255, 42, 133, 0.15);
-}
+    /* ─── TABS ─── */
+    .tabs {
+      display: flex;
+      gap: .3rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
+    }
 
-/* ─── STEPS (guide) ─── */
-.steps { display: flex; flex-direction: column; gap: 1.25rem; }
-.step {
-  display: flex; gap: 1.25rem; align-items: flex-start;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 14px; padding: 1.25rem;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
-}
-.step-num {
-  width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #ffffff;
-  font-weight: 900; font-size: .95rem;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 10px rgba(255, 42, 133, 0.2);
-}
-.step-content h3 { font-size: 1.05rem; margin-bottom: .4rem; font-weight: 600; color: var(--text); }
-.step-content p  { font-size: .9rem; color: var(--muted); line-height: 1.6; }
-.step-content code {
-  font-family: var(--font-mono); font-size: .8rem;
-  background: var(--surface); border: 1px solid var(--border);
-  padding: 3px 8px; border-radius: 6px; color: var(--accent2);
-}
+    .tab-btn {
+      font-family: var(--font-sans);
+      font-size: .95rem;
+      font-weight: 500;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      padding: .9rem 1.75rem;
+      border-bottom: 3px solid transparent;
+      border-radius: 8px 8px 0 0;
+      transition: all .25s ease;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
 
-/* ─── GRID LAYOUTS ─── */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; }
-.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
-@media (max-width: 768px) {
-  .two-col, .three-col { grid-template-columns: 1fr; gap: 1.25rem; }
-  main { padding: 1.5rem 1rem; }
-}
+    .tab-btn:hover {
+      color: var(--accent2);
+      background: rgba(255, 255, 255, 0.02);
+    }
 
-/* ─── TOAST ─── */
-.toast-container {
-  position: fixed; bottom: 1.5rem; right: 1.5rem;
-  display: flex; flex-direction: column; gap: .5rem;
-  z-index: 100;
-}
-.toast {
-  font-size: .9rem; font-family: var(--font-sans); font-weight: 500;
-  padding: .75rem 1.25rem; border-radius: 10px;
-  border: 1px solid var(--border); backdrop-filter: blur(12px);
-  animation: toast-in .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  display: inline-flex; align-items: center; gap: .6rem;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-.toast.ok   { background: rgba(16, 185, 129, 0.15); border-color: var(--green); color: #34d399; }
-.toast.err  { background: rgba(239, 68, 68, 0.15); border-color: var(--red);  color: #f87171; }
-.toast.info { background: rgba(255, 42, 133, 0.12); border-color: var(--accent); color: var(--accent2); }
-@keyframes toast-in {
-  from { opacity: 0; transform: translateX(30px) scale(0.9); }
-  to   { opacity: 1; transform: translateX(0) scale(1); }
-}
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: linear-gradient(to top, rgba(255, 42, 133, 0.05), transparent);
+    }
 
-/* ─── STATUS INDICATOR ─── */
-.status-dot {
-  width: 9px; height: 9px; border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
-  animation: blink 2.5s infinite;
-}
-@keyframes blink { 0%,100%{opacity:1; transform: scale(1);} 50%{opacity:.4; transform: scale(0.9);} }
+    .tab-icon {
+      font-size: 1.1rem;
+    }
 
-/* ─── TOP3 list ─── */
-.top3 { list-style: none; font-family: var(--font-mono); font-size: .85rem; color: var(--muted); }
-.top3 li { padding: .3rem 0; border-bottom: 1px solid rgba(255,255,255,0.01); display: flex; justify-content: space-between; }
-.top3 li span { color: var(--accent2); font-weight: 700; }
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+    }
 
-/* scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-</style>
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    .card-title {
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      letter-spacing: .25em;
+      color: var(--accent2);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-weight: 700;
+    }
+
+    .card-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* ─── RECORDING GRID ─── */
+    .rec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+      gap: .8rem;
+      margin-top: 1rem;
+    }
+
+    .rec-word-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem .5rem;
+      cursor: pointer;
+      transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rec-word-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: var(--glow);
+    }
+
+    .rec-word-btn.has-template {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, .04);
+    }
+
+    .rec-word-btn.has-template .rec-word-label {
+      color: var(--text);
+    }
+
+    .rec-word-btn.recording {
+      border-color: var(--accent);
+      background: rgba(255, 42, 133, .08);
+      animation: pulse-rec .6s infinite alternate;
+    }
+
+    @keyframes pulse-rec {
+      from {
+        box-shadow: 0 0 0 0 rgba(255, 42, 133, 0.4);
+      }
+
+      to {
+        box-shadow: 0 0 0 10px rgba(255, 42, 133, 0);
+      }
+    }
+
+    .rec-word-label {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--muted);
+      transition: color .2s;
+    }
+
+    .rec-word-symbol {
+      font-family: var(--font-mono);
+      font-size: .8rem;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    .rec-word-count {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      color: var(--text);
+      min-height: 1rem;
+    }
+
+    .rec-word-btn.has-template .rec-word-count::before {
+      content: "✓ ";
+    }
+
+    /* ─── MIC BUTTON (big) ─── */
+    .mic-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem 0;
+    }
+
+    .mic-btn {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid var(--border);
+      background: var(--surface2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      color: var(--text);
+    }
+
+    .mic-btn:hover {
+      transform: scale(1.05);
+      border-color: var(--accent2);
+      box-shadow: var(--glow);
+      color: var(--accent);
+    }
+
+    .mic-btn.recording {
+      border-color: var(--accent);
+      background: rgba(255, 42, 133, 0.1);
+      box-shadow: var(--glow-big);
+      animation: pulse-mic 1.2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-mic {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.08);
+        opacity: 0.9;
+      }
+    }
+
+    .mic-label {
+      font-family: var(--font-mono);
+      font-size: .85rem;
+      color: var(--muted);
+      text-align: center;
+      min-height: 1.5rem;
+      font-weight: 500;
+    }
+
+    .mic-label.active {
+      color: var(--accent);
+    }
+
+    /* ─── WAVEFORM ─── */
+    .waveform-wrap {
+      background: rgba(13, 11, 15, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .6rem;
+      margin-top: .5rem;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    canvas#waveCanvas,
+    canvas#sttWaveCanvas {
+      display: block;
+      width: 100%;
+      height: 60px;
+    }
+
+    /* ─── RESULT BOX ─── */
+    .result-box {
+      background: rgba(13, 11, 15, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .6rem;
+      transition: all .3s;
+    }
+
+    .result-box.success {
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.02);
+    }
+
+    .result-box.error {
+      border-color: rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.02);
+    }
+
+    .result-word {
+      font-size: 2.6rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ffffff, var(--accent2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      letter-spacing: -0.5px;
+      word-wrap: break-word;
+    }
+
+    .result-symbol {
+      font-size: 2.2rem;
+      font-family: var(--font-mono);
+      color: var(--text);
+      opacity: 0.9;
+      text-align: center;
+    }
+
+    .result-conf {
+      font-family: var(--font-mono);
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    .confidence-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: .2rem;
+    }
+
+    .confidence-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent3), var(--accent));
+      border-radius: 3px;
+      transition: width .6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ─── TTS SECTION ─── */
+    .tts-input-row {
+      display: flex;
+      gap: .75rem;
+      align-items: stretch;
+    }
+
+    .tts-input {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .85rem 1.25rem;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color .25s;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .tts-input:focus {
+      border-color: var(--accent2);
+    }
+
+    .tts-input::placeholder {
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: var(--font-sans);
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      padding: .85rem 1.75rem;
+      font-size: .95rem;
+      transition: all .2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(255, 42, 133, 0.3);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255, 42, 133, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent2);
+      color: var(--accent2);
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      font-size: .8rem;
+      padding: .5rem 1rem;
+      border-radius: 8px;
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+    }
+
+    /* Quick TTS chips */
+    .tts-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-top: 1.25rem;
+    }
+
+    .chip {
+      font-family: var(--font-sans);
+      font-size: .8rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 6px 14px;
+      cursor: pointer;
+      background: var(--surface2);
+      color: var(--muted);
+      transition: all .2s;
+    }
+
+    .chip:hover {
+      border-color: var(--accent2);
+      color: var(--text);
+      background: rgba(255, 42, 133, 0.05);
+    }
+
+    /* word queue */
+    .word-queue {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-top: 1.25rem;
+      min-height: 2.5rem;
+    }
+
+    .word-chip {
+      font-family: var(--font-mono);
+      font-size: .8rem;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 30px;
+      background: rgba(255, 114, 182, 0.05);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      transition: all .3s ease;
+    }
+
+    .word-chip.playing {
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: var(--glow);
+    }
+
+    .word-chip.missing {
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #f87171;
+    }
+
+    .word-chip.done {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+
+    /* ─── VOCAB TABLE ─── */
+    .vocab-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+      font-family: var(--font-sans);
+    }
+
+    .vocab-table th {
+      text-align: left;
+      padding: 1rem .75rem;
+      color: var(--muted);
+      font-weight: 600;
+      border-bottom: 2px solid var(--border);
+      text-transform: uppercase;
+      font-size: .75rem;
+      letter-spacing: .1em;
+    }
+
+    .vocab-table td {
+      padding: 1rem .75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      vertical-align: middle;
+    }
+
+    .vocab-table tr:hover td {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .badge-ok {
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    .badge-no {
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    .badge-count {
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      font-weight: 700;
+      background: rgba(255, 42, 133, 0.1);
+      color: var(--accent2);
+      padding: 3px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 42, 133, 0.15);
+    }
+
+    /* ─── STEPS (guide) ─── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    .step-num {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #ffffff;
+      font-weight: 900;
+      font-size: .95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(255, 42, 133, 0.2);
+    }
+
+    .step-content h3 {
+      font-size: 1.05rem;
+      margin-bottom: .4rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .step-content p {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .step-content code {
+      font-family: var(--font-mono);
+      font-size: .8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: var(--accent2);
+    }
+
+    /* ─── GRID LAYOUTS ─── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 768px) {
+
+      .two-col,
+      .three-col {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+
+      main {
+        padding: 1.5rem 1rem;
+      }
+    }
+
+    /* ─── TOAST ─── */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      z-index: 100;
+    }
+
+    .toast {
+      font-size: .9rem;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      padding: .75rem 1.25rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      animation: toast-in .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .toast.ok {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--green);
+      color: #34d399;
+    }
+
+    .toast.err {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--red);
+      color: #f87171;
+    }
+
+    .toast.info {
+      background: rgba(255, 42, 133, 0.12);
+      border-color: var(--accent);
+      color: var(--accent2);
+    }
+
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateX(30px) scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    /* ─── STATUS INDICATOR ─── */
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: blink 2.5s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(0.9);
+      }
+    }
+
+    /* ─── TOP3 list ─── */
+    .top3 {
+      list-style: none;
+      font-family: var(--font-mono);
+      font-size: .85rem;
+      color: var(--muted);
+    }
+
+    .top3 li {
+      padding: .3rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.01);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .top3 li span {
+      color: var(--accent2);
+      font-weight: 700;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--muted);
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-  <div class="header-inner">
-    <div class="logo">
-      IFB-306
-    </div>
-    <div style="display:flex;align-items:center;gap:.6rem;">
-      <div class="status-dot"></div>
-      <div class="id-badge">
-        NRP <strong>152023013</strong> · Cleosa Zelda Avrillya
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        IFB-306
+      </div>
+      <div style="display:flex;align-items:center;gap:.6rem;">
+        <div class="status-dot"></div>
+        <div class="id-badge">
+
+        </div>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<div class="toast-container" id="toastContainer"></div>
+  <div class="toast-container" id="toastContainer"></div>
 
-<main>
-  <div class="hero">
-    <div class="hero-label">Pengenalan Teks ke Ucapan — ETS 2</div>
-    <h1>Speech-to-Text<br>& Text-to-Speech</h1>
-    <p class="hero-sub">
-      Metode <strong>MFCC + DTW</strong> &middot; Sistem Suara: <strong>Cleosa Zelda Avrillya</strong>
-    </p>
-  </div>
-
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('guide')">
-      <span class="tab-icon">📋</span> Panduan
-    </button>
-    <button class="tab-btn" onclick="switchTab('record')">
-      <span class="tab-icon">🎙</span> Rekam Suara
-    </button>
-    <button class="tab-btn" onclick="switchTab('stt')">
-      <span class="tab-icon">👂</span> STT
-    </button>
-    <button class="tab-btn" onclick="switchTab('tts')">
-      <span class="tab-icon">🔊</span> TTS
-    </button>
-    <button class="tab-btn" onclick="switchTab('vocab')">
-      <span class="tab-icon">📊</span> Status
-    </button>
-  </div>
-
-  <div id="tab-guide" class="tab-panel active">
-    <div class="card" style="margin-bottom:1.5rem">
-      <div class="card-title">Tentang Aplikasi</div>
-      <p style="color:var(--muted);line-height:1.8;font-size:.95rem">
-        Aplikasi ini mengimplementasikan sistem cerdas laboratorium <strong style="color:var(--text)">Speech-to-Text (STT)</strong> dan
-        <strong style="color:var(--text)">Text-to-Speech (TTS)</strong> mandiri berbasis ekstraksi ciri frekuensi menggunakan:
-        <br><br>
-        • <strong style="color:var(--accent2)">MFCC</strong> (Mel-Frequency Cepstral Coefficients) untuk menangkap karakteristik unik sinyal vokal ucapan<br>
-        • <strong style="color:var(--accent2)">DTW</strong> (Dynamic Time Warping) dengan restriksi Sakoe-Chiba untuk penyelarasan sumbu waktu pola ucapan<br>
-        • <strong style="color:var(--accent2)">Dataset Vokal Mandiri</strong> sebagai basis data acuan klasifikasi *Nearest Neighbor*
+  <main>
+    <div class="hero">
+      <div class="hero-label">Pengenalan Teks ke Ucapan — UAS</div>
+      <h1>Speech-to-Text<br>& Text-to-Speech</h1>
+      <p class="hero-sub">
+        Metode <strong>MFCC + DTW</strong>
       </p>
     </div>
 
-    <div class="card">
-      <div class="card-title">Prosedur Operasional Pengujian</div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <h3>🚀 Inisialisasi Environment Server</h3>
-            <p>Pastikan dependensi Python sudah terinstal di komputer lokal, lalu eksekusi berkas backend utama:<br>
-              <code>pip install flask librosa numpy scipy soundfile</code><br>
-              <code>python app.py</code><br>
-              Akses antarmuka web melalui: <code>http://127.0.0.1:5000</code>
-            </p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <h3>🎙 Akuisisi Korpus Data Latih (Tab "Rekam Suara")</h3>
-            <p>
-              Pilih salah satu token kosakata dari grid menu, tekan tombol lingkaran mikrofon, ucapkan kata target secara natural dan lugas, lalu hentikan perekaman.
-              <br>Disarankan merekam **minimal 3× hingga 5× per kata** untuk memperkaya model variansi pencocokan DTW.
-              <br><strong>Total korpus wajib (18 kata):</strong> nol, satu, dua, tiga, empat, lima, enam, tujuh, delapan, sembilan, sepuluh, tambah, kurang, kali, bagi, cleosa, zelda, avrillya.
-            </p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <h3>👂 Evaluasi Speech-to-Text Tersegmentasi (Tab "STT")</h3>
-            <p>
-              Buka panel STT, picu mikrofon, dan ucapkan angka tunggal maupun ekspresi matematika majemuk (contoh: <code>satu tambah nol</code>).
-              Sistem akan memecah sinyal kontinu berdasarkan parameter hening, mengekstrak 39 dimensi koefisien MFCC, dan mengukur jarak penalti DTW terkecil.
-            </p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-content">
-            <h3>🔊 Sintesis Akustik Text-to-Speech (Tab "TTS")</h3>
-            <p>
-              Masukkan string teks perintah bebas atau manfaatkan fitur makro instan seperti **NRP** atau **Nama**.
-              Sistem akan menyusun dan memainkan urutan potongan audio WAV secara runut dan mulus.
-            </p>
-          </div>
-        </div>
-      </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('guide')">
+        <span class="tab-icon">📋</span> Panduan
+      </button>
+      <button class="tab-btn" onclick="switchTab('record')">
+        <span class="tab-icon">🎙</span> Rekam Suara
+      </button>
+      <button class="tab-btn" onclick="switchTab('stt')">
+        <span class="tab-icon">👂</span> STT
+      </button>
+      <button class="tab-btn" onclick="switchTab('tts')">
+        <span class="tab-icon">🔊</span> TTS
+      </button>
+      <button class="tab-btn" onclick="switchTab('vocab')">
+        <span class="tab-icon">📊</span> Status
+      </button>
     </div>
-  </div>
 
-  <div id="tab-record" class="tab-panel">
-    <div class="two-col">
-      <div>
-        <div class="card">
-          <div class="card-title">Pilih Kata untuk Direkam</div>
-
-          <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">
-            Klik token kata di bawah ini, kemudian lakukan proses perekaman suara pada panel instrumen kanan.
-          </p>
-
-          <p style="font-family:var(--font-mono);font-size:.7rem;color:var(--accent2);margin:.5rem 0 .4rem; font-weight:700">
-            KATEGORI 01 — NUMERIK (0–10)
-          </p>
-          <div class="rec-grid" id="recGrid-numbers"></div>
-
-          <p style="font-family:var(--font-mono);font-size:.7rem;color:var(--accent2);margin:1.5rem 0 .4rem; font-weight:700">
-            KATEGORI 02 — OPERATOR ARITMATIKA
-          </p>
-          <div class="rec-grid" id="recGrid-ops"></div>
-
-          <p style="font-family:var(--font-mono);font-size:.7rem;color:var(--accent2);margin:1.5rem 0 .4rem; font-weight:700">
-            KATEGORI 03 — IDENTITAS MAHASISWA
-          </p>
-          <div class="rec-grid" id="recGrid-id"></div>
-        </div>
+    <div id="tab-guide" class="tab-panel active">
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-title">Tentang Aplikasi</div>
+        <p style="color:var(--muted);line-height:1.8;font-size:.95rem">
+          Aplikasi ini mengimplementasikan sistem cerdas laboratorium <strong style="color:var(--text)">Speech-to-Text
+            (STT)</strong> dan
+          <strong style="color:var(--text)">Text-to-Speech (TTS)</strong> mandiri berbasis ekstraksi ciri frekuensi
+          menggunakan:
+          <br><br>
+          • <strong style="color:var(--accent2)">MFCC</strong> (Mel-Frequency Cepstral Coefficients) untuk menangkap
+          karakteristik unik sinyal vokal ucapan<br>
+          • <strong style="color:var(--accent2)">DTW</strong> (Dynamic Time Warping) dengan restriksi Sakoe-Chiba untuk
+          penyelarasan sumbu waktu pola ucapan<br>
+          • <strong style="color:var(--accent2)">Dataset Vokal Mandiri</strong> sebagai basis data acuan klasifikasi
+          *Nearest Neighbor*
+        </p>
       </div>
 
-      <div>
-        <div class="card" style="position: sticky; top: 90px;">
-          <div class="card-title">Instrumen Perekam</div>
-
-          <div style="text-align:center;padding:1rem 0">
-            <div style="font-size:.9rem;color:var(--muted);margin-bottom:.25rem; font-family: var(--font-mono)">TARGET TOKEN:</div>
-            <div id="selectedWord" style="font-size:2.4rem;font-weight:900;color:var(--accent);min-height:3rem; letter-spacing: -0.5px">
-              —
+      <div class="card">
+        <div class="card-title">Prosedur Operasional Pengujian</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h3>🚀 Inisialisasi Environment Server</h3>
+              <p>Pastikan dependensi Python sudah terinstal di komputer lokal, lalu eksekusi berkas backend utama:<br>
+                <code>pip install flask librosa numpy scipy soundfile</code><br>
+                <code>python app.py</code><br>
+                Akses antarmuka web melalui: <code>http://127.0.0.1:5000</code>
+              </p>
             </div>
-            <div id="selectedSymbol" style="font-family:var(--font-mono);font-size:1rem;color:var(--muted); font-weight: 700"></div>
           </div>
-
-          <div class="mic-section">
-            <div class="waveform-wrap" style="width:100%">
-              <canvas id="waveCanvas" height="60"></canvas>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h3>🎙 Akuisisi Korpus Data Latih (Tab "Rekam Suara")</h3>
+              <p>
+                Pilih salah satu token kosakata dari grid menu, tekan tombol lingkaran mikrofon, ucapkan kata target
+                secara natural dan lugas, lalu hentikan perekaman.
+                <br>Disarankan merekam **minimal 3× hingga 5× per kata** untuk memperkaya model variansi pencocokan DTW.
+                <br><strong>Total korpus wajib (47 kata):</strong> nol, satu, dua, tiga, empat, lima, enam, tujuh,
+                delapan, sembilan, sepuluh, tambah, kurang, kali, bagi, sama-dengan, sayang, semuanya, cleosa, zelda,
+                avrillya, dan abjad A-Z.
+              </p>
             </div>
-            <button class="mic-btn" id="recMicBtn" onclick="toggleRecording()">🎙</button>
-            <div class="mic-label" id="recMicLabel">Tentukan kata terlebih dahulu untuk membuka akses instrumen</div>
           </div>
-
-          <div id="recStatus" class="result-box" style="margin-top:.5rem;min-height:60px">
-            <div style="color:var(--muted);font-size:.85rem; font-family: var(--font-mono)">[Awaiting Recording Signal]</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="tab-stt" class="tab-panel">
-    <div class="two-col">
-      <div>
-        <div class="card">
-          <div class="card-title">Input Sinyal Akustik</div>
-          <div class="mic-section">
-            <div class="waveform-wrap" style="width:100%">
-              <canvas id="sttWaveCanvas" height="60"></canvas>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h3>👂 Evaluasi Speech-to-Text Tersegmentasi (Tab "STT")</h3>
+              <p>
+                Buka panel STT, picu mikrofon, dan ucapkan angka tunggal maupun ekspresi matematika majemuk (contoh:
+                <code>satu tambah nol</code>).
+                Sistem akan memecah sinyal kontinu berdasarkan parameter hening, mengekstrak 39 dimensi koefisien MFCC,
+                dan mengukur jarak penalti DTW terkecil.
+              </p>
             </div>
-            <button class="mic-btn" id="sttMicBtn" onclick="toggleSTT()">🎙</button>
-            <div class="mic-label" id="sttMicLabel">Tekan tombol pemicu mikrofon untuk mulai mendengarkan ucapan</div>
           </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="card">
-          <div class="card-title">Hasil Dekode Matriks DTW</div>
-          <div class="result-box" id="sttResult">
-            <div style="color:var(--muted);font-size:.85rem; font-family: var(--font-mono)">[Awaiting Processing Result]</div>
-          </div>
-
-          <div style="margin-top:1.5rem">
-            <div class="card-title" style="font-size:.7rem; letter-spacing: 0.15em">Evaluasi K-Nearest Candidate</div>
-            <ul class="top3" id="top3List">
-              <li style="color: var(--muted)">Belum ada log pengenalan yang terekam</li>
-            </ul>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h3>🔊 Sintesis Akustik Text-to-Speech (Tab "TTS")</h3>
+              <p>
+                Masukkan string teks perintah bebas atau manfaatkan fitur makro instan seperti **NRP** atau **Nama**.
+                Sistem akan menyusun dan memainkan urutan potongan audio WAV secara runut dan mulus.
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div id="tab-tts" class="tab-panel">
-    <div class="card" style="margin-bottom:1.5rem">
-      <div class="card-title">Input Kompilasi Huruf</div>
-      <div class="tts-input-row">
-        <input class="tts-input" id="ttsInput"
-          placeholder="Masukkan teks kata (Contoh: satu tambah dua  |  nrp  |  nama)"
-          onkeydown="if(event.key==='Enter') speakText()">
-        <button class="btn btn-primary" onclick="speakText()">🔊 Jalankan Sintesis</button>
-      </div>
+    <div id="tab-record" class="tab-panel">
+      <div class="two-col">
+        <div>
+          <div class="card">
+            <div class="card-title">Pilih Kata untuk Direkam</div>
 
-      <div class="tts-chips">
-        <div style="font-family:var(--font-mono);font-size:.75rem;color:var(--muted);margin-right:.4rem;align-self:center">Makro Perintah Cepat →</div>
-        <div class="chip" onclick="quickTTS('nrp')">NRP: 152023013</div>
-        <div class="chip" onclick="quickTTS('nama')">Nama: Cleosa Zelda Avrillya</div>
-        <div class="chip" onclick="quickTTS('satu tambah dua')">1 + 2</div>
-        <div class="chip" onclick="quickTTS('tiga kali empat')">3 × 4</div>
-        <div class="chip" onclick="quickTTS('sepuluh bagi dua')">10 ÷ 2</div>
-        <div class="chip" onclick="quickTTS('nol satu dua tiga empat lima enam tujuh delapan sembilan sepuluh')">Urutan Angka (0-10)</div>
+            <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">
+              Klik token kata di bawah ini, kemudian lakukan proses perekaman suara pada panel instrumen kanan.
+            </p>
+
+            <p
+              style="font-family:var(--font-mono);font-size:.7rem;color:var(--accent2);margin:.5rem 0 .4rem; font-weight:700">
+              KATEGORI 01 — NUMERIK (0–10)
+            </p>
+            <div class="rec-grid" id="recGrid-numbers"></div>
+
+            <p
+              style="font-family:var(--font-mono);font-size:.7rem;color:var(--accent2);margin:1.5rem 0 .4rem; font-weight:700">
+              KATEGORI 02 — OPERATOR ARITMATIKA
+            </p>
+            <div class="rec-grid" id="recGrid-ops"></div>
+
+            <p
+              style="font-family:var(--font-mono);font-size:.7rem;color:var(--accent2);margin:1.5rem 0 .4rem; font-weight:700">
+              KATEGORI 03 — IDENTITAS MAHASISWA
+            </p>
+            <div class="rec-grid" id="recGrid-id"></div>
+
+            <p
+              style="font-family:var(--font-mono);font-size:.7rem;color:var(--accent2);margin:1.5rem 0 .4rem; font-weight:700">
+              KATEGORI 04 — ALFABET (A-Z)
+            </p>
+            <div class="rec-grid" id="recGrid-alphabet"></div>
+
+            <p
+              style="font-family:var(--font-mono);font-size:.7rem;color:var(--accent2);margin:1.5rem 0 .4rem; font-weight:700">
+              KATEGORI 05 — FRASA & KOSAKATA KHUSUS
+            </p>
+            <div class="rec-grid" id="recGrid-phrases"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card" style="position: sticky; top: 90px;">
+            <div class="card-title">Instrumen Perekam</div>
+
+            <div style="text-align:center;padding:1rem 0">
+              <div style="font-size:.9rem;color:var(--muted);margin-bottom:.25rem; font-family: var(--font-mono)">TARGET
+                TOKEN:</div>
+              <div id="selectedWord"
+                style="font-size:2.4rem;font-weight:900;color:var(--accent);min-height:3rem; letter-spacing: -0.5px">
+                —
+              </div>
+              <div id="selectedSymbol"
+                style="font-family:var(--font-mono);font-size:1rem;color:var(--muted); font-weight: 700"></div>
+            </div>
+
+            <div class="mic-section">
+              <div class="waveform-wrap" style="width:100%">
+                <canvas id="waveCanvas" height="60"></canvas>
+              </div>
+              <button class="mic-btn" id="recMicBtn" onclick="toggleRecording()">🎙</button>
+              <div class="mic-label" id="recMicLabel">Tentukan kata terlebih dahulu untuk membuka akses instrumen</div>
+            </div>
+
+            <div id="recStatus" class="result-box" style="margin-top:.5rem;min-height:60px">
+              <div style="color:var(--muted);font-size:.85rem; font-family: var(--font-mono)">[Awaiting Recording
+                Signal]</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">Antrian Komponen Audio Pemutaran</div>
-      <div id="wordQueue" class="word-queue">
-        <span style="color:var(--muted);font-size:.85rem; font-family: var(--font-mono)">[Antrian Kosong — Isikan Teks Terlebih Dahulu]</span>
-      </div>
+    <div id="tab-stt" class="tab-panel">
+      <div class="two-col">
+        <div>
+          <div class="card">
+            <div class="card-title">Input Sinyal Akustik</div>
+            <div class="mic-section">
+              <div class="waveform-wrap" style="width:100%">
+                <canvas id="sttWaveCanvas" height="60"></canvas>
+              </div>
+              <button class="mic-btn" id="sttMicBtn" onclick="toggleSTT()">🎙</button>
+              <div class="mic-label" id="sttMicLabel">Tekan tombol pemicu mikrofon untuk mulai mendengarkan ucapan</div>
+            </div>
+          </div>
+        </div>
 
-      <div style="margin-top:1.5rem;display:flex;gap:1rem;align-items:center">
-        <button class="btn btn-secondary" onclick="stopTTS()" id="ttsStopBtn" disabled>⏹ Interupsi Pemutaran</button>
-        <div id="ttsProgress" style="font-family:var(--font-mono);font-size:.8rem;color:var(--accent2); font-weight: 700"></div>
-      </div>
-    </div>
-  </div>
+        <div>
+          <div class="card">
+            <div class="card-title">Hasil Dekode Matriks DTW</div>
+            <div class="result-box" id="sttResult">
+              <div style="color:var(--muted);font-size:.85rem; font-family: var(--font-mono)">[Awaiting Processing
+                Result]</div>
+            </div>
 
-  <div id="tab-vocab" class="tab-panel">
-    <div class="card">
-      <div class="card-title" style="justify-content:space-between; margin-bottom: 2rem">
-        <span>Matriks Status Kapasitas Model Dataset</span>
-        <button class="btn btn-secondary" onclick="loadVocab()" style="font-size:.75rem;padding:.4rem 1rem; border-radius: 8px">
-          🔄 Sinkronisasi Ulang Data
-        </button>
-      </div>
-      <div style="overflow-x: auto;">
-        <table class="vocab-table">
-          <thead>
-            <tr>
-              <th>Token Kosakata</th>
-              <th>Representasi Simbol</th>
-              <th>Klaster Kategori</th>
-              <th>Jumlah Sampel Latih STT</th>
-              <th>Validitas Berkas Wav TTS</th>
-              <th style="text-align: center;">Manajemen Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="vocabBody">
-            <tr><td colspan="6" style="color:var(--muted);padding:1.5rem; text-align: center; font-family: var(--font-mono)">Membaca data konfigurasi basis data…</td></tr>
-          </tbody>
-        </table>
+            <div style="margin-top:1.5rem">
+              <div class="card-title" style="font-size:.7rem; letter-spacing: 0.15em">Evaluasi K-Nearest Candidate</div>
+              <ul class="top3" id="top3List">
+                <li style="color: var(--muted)">Belum ada log pengenalan yang terekam</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-</main>
+    <div id="tab-tts" class="tab-panel">
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-title">Input Kompilasi Huruf</div>
+        <div class="tts-input-row">
+          <input class="tts-input" id="ttsInput"
+            placeholder="Masukkan teks kata (Contoh: satu tambah dua  |  nrp  |  nama)"
+            onkeydown="if(event.key==='Enter') speakText()">
+          <button class="btn btn-primary" onclick="speakText()">🔊 Jalankan Sintesis</button>
+        </div>
 
-<script>
-// ══════════════════════════════════════════════════
-//  STATE MANAGEMENT
-// ══════════════════════════════════════════════════
-const VOCAB_MAP = {
-  "nol":"0","satu":"1","dua":"2","tiga":"3","empat":"4","lima":"5",
-  "enam":"6","tujuh":"7","delapan":"8","sembilan":"9","sepuluh":"10",
-  "tambah":"+","kurang":"−","kali":"×","bagi":"÷",
-  "cleosa":"Cleosa","zelda":"Zelda","avrillya":"Avrillya"
-};
-const CATEGORIES = {
-  numbers: ["nol","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh"],
-  ops:     ["tambah","kurang","kali","bagi"],
-  id:      ["cleosa","zelda","avrillya"]
-};
+        <div class="tts-chips">
+          <div
+            style="font-family:var(--font-mono);font-size:.75rem;color:var(--muted);margin-right:.4rem;align-self:center">
+            Makro Perintah Cepat →</div>
+          <div class="chip" onclick="quickTTS('nrp')">NRP: 152023013</div>
+          <div class="chip" onclick="quickTTS('nama')">Nama: Cleosa Zelda Avrillya</div>
+          <div class="chip" onclick="quickTTS('1 + 1 = 2')">1 + 1 = 2</div>
+          <div class="chip" onclick="quickTTS('1 + 2 = 3')">1 + 2 = 3</div>
+          <div class="chip" onclick="quickTTS('3 + 1 = 4')">3 + 1 = 4</div>
+          <div class="chip" onclick="quickTTS('123 sayang semuanya')">123 sayang semuanya</div>
+          <div class="chip" onclick="quickTTS('a b c d e f g')">Spelling a b c...</div>
+        </div>
+      </div>
 
-let selectedWord = null;
-let mediaRecorder = null;
-let audioChunks  = [];
-let isRecording  = false;
-let animFrameId  = null;
-let audioContext = null;
-let analyser     = null;
-let micStream    = null;
-let recMode      = null; 
-let ttsAudios    = [];
-let ttsIdx       = 0;
-let ttsStop      = false;
-let vocabStats   = {};
+      <div class="card">
+        <div class="card-title">Antrian Komponen Audio Pemutaran</div>
+        <div id="wordQueue" class="word-queue">
+          <span style="color:var(--muted);font-size:.85rem; font-family: var(--font-mono)">[Antrian Kosong — Isikan Teks
+            Terlebih Dahulu]</span>
+        </div>
 
-// ══════════════════════════════════════════════════
-//  NAVIGATION LOGIC
-// ══════════════════════════════════════════════════
-function switchTab(name) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  event.currentTarget.classList.add('active');
-  if (name === 'vocab') loadVocab();
-}
+        <div style="margin-top:1.5rem;display:flex;gap:1rem;align-items:center">
+          <button class="btn btn-secondary" onclick="stopTTS()" id="ttsStopBtn" disabled>⏹ Interupsi Pemutaran</button>
+          <div id="ttsProgress"
+            style="font-family:var(--font-mono);font-size:.8rem;color:var(--accent2); font-weight: 700"></div>
+        </div>
+      </div>
+    </div>
 
-// ══════════════════════════════════════════════════
-//  NOTIFICATION CONTROL
-// ══════════════════════════════════════════════════
-function toast(msg, type='info') {
-  const c = document.getElementById('toastContainer');
-  const t = document.createElement('div');
-  t.className = `toast ${type}`;
-  t.innerHTML = (type==='ok'?'✓ ':type==='err'?'✗ ':'ℹ ') + msg;
-  c.appendChild(t);
-  setTimeout(() => t.remove(), 3500);
-}
+    <div id="tab-vocab" class="tab-panel">
+      <div class="card">
+        <div class="card-title" style="justify-content:space-between; margin-bottom: 2rem">
+          <span>Matriks Status Kapasitas Model Dataset</span>
+          <button class="btn btn-secondary" onclick="loadVocab()"
+            style="font-size:.75rem;padding:.4rem 1rem; border-radius: 8px">
+            🔄 Sinkronisasi Ulang Data
+          </button>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="vocab-table">
+            <thead>
+              <tr>
+                <th>Token Kosakata</th>
+                <th>Representasi Simbol</th>
+                <th>Klaster Kategori</th>
+                <th>Jumlah Sampel Latih STT</th>
+                <th>Validitas Berkas Wav TTS</th>
+                <th style="text-align: center;">Manajemen Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="vocabBody">
+              <tr>
+                <td colspan="6"
+                  style="color:var(--muted);padding:1.5rem; text-align: center; font-family: var(--font-mono)">Membaca
+                  data konfigurasi basis data…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-// ══════════════════════════════════════════════════
-//  GRID RENDER SYSTEM
-// ══════════════════════════════════════════════════
-async function buildGrid() {
-  const stats = await fetch('/api/stats').then(r=>r.json());
-  vocabStats = stats;
-  for (const [cat, words] of Object.entries(CATEGORIES)) {
-    const grid = document.getElementById('recGrid-' + cat);
-    if (!grid) continue;
-    grid.innerHTML = '';
-    words.forEach(w => {
-      const count = stats[w] || 0;
-      const btn = document.createElement('button');
-      btn.className = 'rec-word-btn' + (count > 0 ? ' has-template' : '');
-      btn.dataset.word = w;
-      btn.innerHTML = `
+  </main>
+
+  <script>
+    // ══════════════════════════════════════════════════
+    //  STATE MANAGEMENT
+    // ══════════════════════════════════════════════════
+    const VOCAB_MAP = {
+      "nol": "0", "satu": "1", "dua": "2", "tiga": "3", "empat": "4", "lima": "5",
+      "enam": "6", "tujuh": "7", "delapan": "8", "sembilan": "9", "sepuluh": "10",
+      "tambah": "+", "kurang": "−", "kali": "×", "bagi": "÷",
+      "cleosa": "Cleosa", "zelda": "Zelda", "avrillya": "Avrillya",
+      "sama-dengan": "=", "sayang": "sayang", "semuanya": "semuanya",
+      "a": "A", "b": "B", "c": "C", "d": "D", "e": "E", "f": "F", "g": "G", "h": "H", "i": "I", "j": "J", "k": "K", "l": "L", "m": "M", "n": "N", "o": "O", "p": "P", "q": "Q", "r": "R", "s": "S", "t": "T", "u": "U", "v": "v", "w": "W", "x": "X", "y": "Y", "z": "Z",
+      "1+1=2": "1+1=2",
+      "10+2=5": "10+2=5",
+      "123sayangsemuanya": "123 sayang semuanya",
+      "klasifikasidatalatihdiprosesmenggunakanalgoritmasvm": "klasifikasi data latih diproses menggunakan algoritma svm",
+      "mahasiswateknikinformatikasedangmelakukanpengujianaplikasiweb": "mahasiswa teknik informatika sedang melakukan pengujian aplikasi web"
+    };
+    const CATEGORIES = {
+      numbers: ["nol", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh"],
+      ops: ["tambah", "kurang", "kali", "bagi"],
+      id: ["cleosa", "zelda", "avrillya"],
+      alphabet: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
+      phrases: [
+        "sama-dengan", "sayang", "semuanya",
+        "1+1=2", "10+2=5", "123sayangsemuanya",
+        "klasifikasidatalatihdiprosesmenggunakanalgoritmasvm",
+        "mahasiswateknikinformatikasedangmelakukanpengujianaplikasiweb"
+      ]
+    };
+
+    let selectedWord = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+    let animFrameId = null;
+    let audioContext = null;
+    let analyser = null;
+    let micStream = null;
+    let recMode = null;
+    let ttsAudios = [];
+    let ttsIdx = 0;
+    let ttsStop = false;
+    let vocabStats = {};
+
+    // ══════════════════════════════════════════════════
+    //  NAVIGATION LOGIC
+    // ══════════════════════════════════════════════════
+    function switchTab(name) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      event.currentTarget.classList.add('active');
+      if (name === 'vocab') loadVocab();
+    }
+
+    // ══════════════════════════════════════════════════
+    //  NOTIFICATION CONTROL
+    // ══════════════════════════════════════════════════
+    function toast(msg, type = 'info') {
+      const c = document.getElementById('toastContainer');
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.innerHTML = (type === 'ok' ? '✓ ' : type === 'err' ? '✗ ' : 'ℹ ') + msg;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 3500);
+    }
+
+    // ══════════════════════════════════════════════════
+    //  GRID RENDER SYSTEM
+    // ══════════════════════════════════════════════════
+    async function buildGrid() {
+      const stats = await fetch('/api/stats').then(r => r.json());
+      vocabStats = stats;
+      for (const [cat, words] of Object.entries(CATEGORIES)) {
+        const grid = document.getElementById('recGrid-' + cat);
+        if (!grid) continue;
+        grid.innerHTML = '';
+        words.forEach(w => {
+          const count = stats[w] || 0;
+          const btn = document.createElement('button');
+          btn.className = 'rec-word-btn' + (count > 0 ? ' has-template' : '');
+          btn.dataset.word = w;
+          btn.innerHTML = `
         <span class="rec-word-label">${w}</span>
-        <span class="rec-word-symbol">${VOCAB_MAP[w]||''}</span>
+        <span class="rec-word-symbol">${VOCAB_MAP[w] || ''}</span>
         <span class="rec-word-count">${count > 0 ? count + '× sampel' : 'kosong'}</span>
       `;
-      btn.onclick = () => selectWord(w);
-      grid.appendChild(btn);
-    });
-  }
-}
-
-function selectWord(word) {
-  selectedWord = word;
-  document.getElementById('selectedWord').textContent = word;
-  document.getElementById('selectedSymbol').textContent = VOCAB_MAP[word] ? `[${VOCAB_MAP[word]}]` : '';
-  document.getElementById('recMicLabel').textContent = `Instrumen Terbuka — Siap Mengakuisisi Kata "${word}"`;
-  document.getElementById('recMicLabel').classList.remove('active');
-  document.querySelectorAll('.rec-word-btn').forEach(b => b.style.border = '1px solid var(--border)');
-  const sel = document.querySelector(`.rec-word-btn[data-word="${word}"]`);
-  if (sel) sel.style.border = '1px solid var(--accent)';
-}
-
-// ══════════════════════════════════════════════════
-//  VISUAL SIGNAL ENGINE (WAVEFORM)
-// ══════════════════════════════════════════════════
-function startWaveform(canvasId) {
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-  canvas.height = 60 * window.devicePixelRatio;
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  const W = canvas.offsetWidth, H = 60;
-
-  function draw() {
-    animFrameId = requestAnimationFrame(draw);
-    const data = new Uint8Array(analyser.frequencyBinCount);
-    analyser.getByteTimeDomainData(data);
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = '#15121a';
-    ctx.fillRect(0, 0, W, H);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#ff2a85';
-    ctx.beginPath();
-    const sliceW = W / data.length;
-    let x = 0;
-    for (let i = 0; i < data.length; i++) {
-      const v = data[i] / 128.0;
-      const y = (v * H) / 2;
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      x += sliceW;
+          btn.onclick = () => selectWord(w);
+          grid.appendChild(btn);
+        });
+      }
     }
-    ctx.stroke();
-  }
-  draw();
-}
 
-function stopWaveform(canvasId) {
-  if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-// ══════════════════════════════════════════════════
-//  HARDWARE INTEGRATION HELPERS
-// ══════════════════════════════════════════════════
-async function startMic(canvasId) {
-  micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  audioContext = new AudioContext();
-  analyser = audioContext.createAnalyser();
-  analyser.fftSize = 2048;
-  audioContext.createMediaStreamSource(micStream).connect(analyser);
-  startWaveform(canvasId);
-
-  mediaRecorder = new MediaRecorder(micStream, { mimeType: 'audio/webm' });
-  audioChunks = [];
-  mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-  mediaRecorder.start();
-}
-
-function stopMic(canvasId) {
-  return new Promise(resolve => {
-    if (!mediaRecorder) { resolve(null); return; }
-    mediaRecorder.onstop = () => {
-      const blob = new Blob(audioChunks, { type: 'audio/webm' });
-      resolve(blob);
-    };
-    mediaRecorder.stop();
-    micStream.getTracks().forEach(t => t.stop());
-    stopWaveform(canvasId);
-  });
-}
-
-// ══════════════════════════════════════════════════
-//  RECORDING PIPELINE
-// ══════════════════════════════════════════════════
-async function toggleRecording() {
-  if (!selectedWord) { toast('Harap tentukan token kosakata terlebih dahulu!', 'err'); return; }
-  const btn = document.getElementById('recMicBtn');
-  const lbl = document.getElementById('recMicLabel');
-
-  if (!isRecording) {
-    try {
-      await startMic('waveCanvas');
-      isRecording = true; recMode = 'record';
-      btn.classList.add('recording'); btn.textContent = '⏹';
-      lbl.textContent = `● [RECORDING ACTIVE] Membaca input vokal untuk "${selectedWord}"...`;
-      lbl.classList.add('active');
-    } catch(e) {
-      toast('Akses perangkat periferal mikrofon ditolak: ' + e.message, 'err');
+    function selectWord(word) {
+      selectedWord = word;
+      document.getElementById('selectedWord').textContent = word;
+      document.getElementById('selectedSymbol').textContent = VOCAB_MAP[word] ? `[${VOCAB_MAP[word]}]` : '';
+      document.getElementById('recMicLabel').textContent = `Instrumen Terbuka — Siap Mengakuisisi Kata "${word}"`;
+      document.getElementById('recMicLabel').classList.remove('active');
+      document.querySelectorAll('.rec-word-btn').forEach(b => b.style.border = '1px solid var(--border)');
+      const sel = document.querySelector(`.rec-word-btn[data-word="${word}"]`);
+      if (sel) sel.style.border = '1px solid var(--accent)';
     }
-  } else {
-    isRecording = false;
-    btn.classList.remove('recording'); btn.textContent = '🎙';
-    lbl.textContent = 'Menjalankan encoding dan ekstraksi ciri…';
-    lbl.classList.remove('active');
 
-    const blob = await stopMic('waveCanvas');
-    if (!blob) return;
-    await uploadRecording(blob, selectedWord);
-  }
-}
+    // ══════════════════════════════════════════════════
+    //  VISUAL SIGNAL ENGINE (WAVEFORM)
+    // ══════════════════════════════════════════════════
+    function startWaveform(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+      canvas.height = 60 * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      const W = canvas.offsetWidth, H = 60;
 
-async function uploadRecording(blob, word) {
-  const lbl = document.getElementById('recMicLabel');
-  const statusEl = document.getElementById('recStatus');
+      function draw() {
+        animFrameId = requestAnimationFrame(draw);
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteTimeDomainData(data);
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = '#15121a';
+        ctx.fillRect(0, 0, W, H);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#ff2a85';
+        ctx.beginPath();
+        const sliceW = W / data.length;
+        let x = 0;
+        for (let i = 0; i < data.length; i++) {
+          const v = data[i] / 128.0;
+          const y = (v * H) / 2;
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          x += sliceW;
+        }
+        ctx.stroke();
+      }
+      draw();
+    }
 
-  const fd = new FormData();
-  fd.append('audio', blob, 'rec.webm');
-  fd.append('word', word);
+    function stopWaveform(canvasId) {
+      if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
 
-  try {
-    const res = await fetch('/api/record', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (data.error) {
-      toast(data.error, 'err');
-      statusEl.innerHTML = `<div style="color:var(--red); font-family: var(--font-mono)">Error: ${data.error}</div>`;
-      statusEl.className = 'result-box error';
-    } else {
-      toast(`Sampel vokal "${word}" sukses disimpan (Total: ${data.count}×)`, 'ok');
-      statusEl.innerHTML = `
+    // ══════════════════════════════════════════════════
+    //  HARDWARE INTEGRATION HELPERS
+    // ══════════════════════════════════════════════════
+    async function startMic(canvasId) {
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioContext = new AudioContext();
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 2048;
+      audioContext.createMediaStreamSource(micStream).connect(analyser);
+      startWaveform(canvasId);
+
+      mediaRecorder = new MediaRecorder(micStream, { mimeType: 'audio/webm' });
+      audioChunks = [];
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+      mediaRecorder.start();
+    }
+
+    function stopMic(canvasId) {
+      return new Promise(resolve => {
+        if (!mediaRecorder) { resolve(null); return; }
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(audioChunks, { type: 'audio/webm' });
+          resolve(blob);
+        };
+        mediaRecorder.stop();
+        micStream.getTracks().forEach(t => t.stop());
+        stopWaveform(canvasId);
+      });
+    }
+
+    // ══════════════════════════════════════════════════
+    //  RECORDING PIPELINE
+    // ══════════════════════════════════════════════════
+    async function toggleRecording() {
+      if (!selectedWord) { toast('Harap tentukan token kosakata terlebih dahulu!', 'err'); return; }
+      const btn = document.getElementById('recMicBtn');
+      const lbl = document.getElementById('recMicLabel');
+
+      if (!isRecording) {
+        try {
+          await startMic('waveCanvas');
+          isRecording = true; recMode = 'record';
+          btn.classList.add('recording'); btn.textContent = '⏹';
+          lbl.textContent = `● [RECORDING ACTIVE] Membaca input vokal untuk "${selectedWord}"...`;
+          lbl.classList.add('active');
+        } catch (e) {
+          toast('Akses perangkat periferal mikrofon ditolak: ' + e.message, 'err');
+        }
+      } else {
+        isRecording = false;
+        btn.classList.remove('recording'); btn.textContent = '🎙';
+        lbl.textContent = 'Menjalankan encoding dan ekstraksi ciri…';
+        lbl.classList.remove('active');
+
+        const blob = await stopMic('waveCanvas');
+        if (!blob) return;
+        await uploadRecording(blob, selectedWord);
+      }
+    }
+
+    async function uploadRecording(blob, word) {
+      const lbl = document.getElementById('recMicLabel');
+      const statusEl = document.getElementById('recStatus');
+
+      const fd = new FormData();
+      fd.append('audio', blob, 'rec.webm');
+      fd.append('word', word);
+
+      try {
+        const res = await fetch('/api/record', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.error) {
+          toast(data.error, 'err');
+          statusEl.innerHTML = `<div style="color:var(--red); font-family: var(--font-mono)">Error: ${data.error}</div>`;
+          statusEl.className = 'result-box error';
+        } else {
+          toast(`Sampel vokal "${word}" sukses disimpan (Total: ${data.count}×)`, 'ok');
+          statusEl.innerHTML = `
         <div class="result-word">${word}</div>
-        <div class="result-symbol">${VOCAB_MAP[word]||''}</div>
+        <div class="result-symbol">${VOCAB_MAP[word] || ''}</div>
         <div class="result-conf" style="color: var(--green); font-family: var(--font-mono)">✓ Berhasil di-decode · Berkas ke-${data.count} · ${data.frames} frame MFCC</div>
       `;
-      statusEl.className = 'result-box success';
-      lbl.textContent = `Akuisisi data berhasil. Tambahkan sampel lagi atau ganti kata target`;
-      await buildGrid();
+          statusEl.className = 'result-box success';
+          lbl.textContent = `Akuisisi data berhasil. Tambahkan sampel lagi atau ganti kata target`;
+          await buildGrid();
+        }
+      } catch (e) {
+        toast('Gagal melakukan transmisi data: ' + e.message, 'err');
+      }
     }
-  } catch(e) {
-    toast('Gagal melakukan transmisi data: ' + e.message, 'err');
-  }
-}
 
-// ══════════════════════════════════════════════════
-//  SPEECH RECOGNITION (STT) PIPELINE
-// ══════════════════════════════════════════════════
-async function toggleSTT() {
-  const btn = document.getElementById('sttMicBtn');
-  const lbl = document.getElementById('sttMicLabel');
+    // ══════════════════════════════════════════════════
+    //  SPEECH RECOGNITION (STT) PIPELINE
+    // ══════════════════════════════════════════════════
+    async function toggleSTT() {
+      const btn = document.getElementById('sttMicBtn');
+      const lbl = document.getElementById('sttMicLabel');
 
-  if (!isRecording) {
-    try {
-      await startMic('sttWaveCanvas');
-      isRecording = true; recMode = 'stt';
-      btn.classList.add('recording'); btn.textContent = '⏹';
-      lbl.textContent = '● [LISTENING] Berbicaralah sekarang, lalu klik stop untuk komputasi';
-      lbl.classList.add('active');
-    } catch(e) {
-      toast('Akses perangkat periferal mikrofon ditolak: ' + e.message, 'err');
+      if (!isRecording) {
+        try {
+          await startMic('sttWaveCanvas');
+          isRecording = true; recMode = 'stt';
+          btn.classList.add('recording'); btn.textContent = '⏹';
+          lbl.textContent = '● [LISTENING] Berbicaralah sekarang, lalu klik stop untuk komputasi';
+          lbl.classList.add('active');
+        } catch (e) {
+          toast('Akses perangkat periferal mikrofon ditolak: ' + e.message, 'err');
+        }
+      } else {
+        isRecording = false;
+        btn.classList.remove('recording'); btn.textContent = '🎙';
+        lbl.textContent = 'Mengeksekusi proses segmentasi dan matriks DTW...';
+        lbl.classList.remove('active');
+
+        const blob = await stopMic('sttWaveCanvas');
+        if (!blob) return;
+
+        const fd = new FormData();
+        fd.append('audio', blob, 'test.webm');
+        try {
+          const res = await fetch('/api/recognize', { method: 'POST', body: fd });
+          const data = await res.json();
+          showSTTResult(data);
+          lbl.textContent = 'Klik tombol kembali untuk melakukan pengujian baru';
+        } catch (e) {
+          toast('Kegagalan proses komputasi recognizer: ' + e.message, 'err');
+        }
+      }
     }
-  } else {
-    isRecording = false;
-    btn.classList.remove('recording'); btn.textContent = '🎙';
-    lbl.textContent = 'Mengeksekusi proses segmentasi dan matriks DTW...';
-    lbl.classList.remove('active');
 
-    const blob = await stopMic('sttWaveCanvas');
-    if (!blob) return;
+    function showSTTResult(data) {
+      const box = document.getElementById('sttResult');
+      const top3 = document.getElementById('top3List');
 
-    const fd = new FormData();
-    fd.append('audio', blob, 'test.webm');
-    try {
-      const res = await fetch('/api/recognize', { method: 'POST', body: fd });
-      const data = await res.json();
-      showSTTResult(data);
-      lbl.textContent = 'Klik tombol kembali untuk melakukan pengujian baru';
-    } catch(e) {
-      toast('Kegagalan proses komputasi recognizer: ' + e.message, 'err');
-    }
-  }
-}
+      if (data.error) {
+        box.className = 'result-box error';
+        box.innerHTML = `<div style="color:var(--red); font-family: var(--font-mono)">${data.error}</div>`;
+        top3.innerHTML = `<li style="color: var(--muted)">Gagal memproses matriks ranking</li>`;
+        return;
+      }
 
-function showSTTResult(data) {
-  const box = document.getElementById('sttResult');
-  const top3 = document.getElementById('top3List');
-  
-  if (data.error) {
-    box.className = 'result-box error';
-    box.innerHTML = `<div style="color:var(--red); font-family: var(--font-mono)">${data.error}</div>`;
-    top3.innerHTML = `<li style="color: var(--muted)">Gagal memproses matriks ranking</li>`;
-    return;
-  }
-  
-  // Tampilkan hasil kalimat utama di kotak hijau
-  box.className = 'result-box success';
-  box.innerHTML = `
+      // Tampilkan hasil kalimat utama di kotak hijau
+      box.className = 'result-box success';
+      box.innerHTML = `
     <div class="result-word">${data.recognized}</div>
-    <div class="result-symbol">${data.symbol || VOCAB_MAP[data.recognized]||''}</div>
+    <div class="result-symbol">${data.symbol || VOCAB_MAP[data.recognized] || ''}</div>
     <div class="result-conf">Rerata Jarak DTW: ${data.distance} · Batas Keyakinan: ${data.confidence}%</div>
     <div class="confidence-bar">
       <div class="confidence-fill" style="width:${data.confidence}%"></div>
     </div>
   `;
-  
-  // Render ulang list rangking per segmen kata secara dinamis
-  if (data.segment_logs && data.segment_logs.length > 0) {
-    top3.innerHTML = data.segment_logs.map(log => {
-      // Bikin sub-list untuk peringkat 1, 2, 3 di dalam kata tersebut
-      const rankItems = log.top3.map((item, i) => `
+
+      // Render ulang list rangking per segmen kata secara dinamis
+      if (data.segment_logs && data.segment_logs.length > 0) {
+        top3.innerHTML = data.segment_logs.map(log => {
+          // Bikin sub-list untuk peringkat 1, 2, 3 di dalam kata tersebut
+          const rankItems = log.top3.map((item, i) => `
         <div style="display: flex; justify-content: space-between; padding: 0.15rem 0; font-size: 0.8rem; ${i === 0 ? 'color: var(--accent2); font-weight: 700;' : 'opacity: 0.6;'}">
           <span>${i === 0 ? '🏆' : '•'} ${item[0]}</span>
           <span style="font-family: var(--font-mono)">dist: ${item[1]}</span>
         </div>
       `).join('');
-      
-      return `
+
+          return `
         <li style="display: block; padding: 0.75rem 0; border-bottom: 1px solid var(--border)">
           <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); margin-bottom: 0.3rem; text-transform: uppercase">
             // Analisis Kata ke-${log.segment_index} (Terpilih: "${log.winner}")
@@ -1054,158 +1526,166 @@ function showSTTResult(data) {
           ${rankItems}
         </li>
       `;
-    }).join('');
-  } else {
-    top3.innerHTML = `<li style="color: var(--muted)">Tidak ada data log yang terekam</li>`;
-  }
-  
-  toast(`Deteksi Berhasil: "${data.recognized}"`, 'ok');
-}
+        }).join('');
+      } else {
+        top3.innerHTML = `<li style="color: var(--muted)">Tidak ada data log yang terekam</li>`;
+      }
 
-// ══════════════════════════════════════════════════
-//  TEXT-TO-SPEECH (TTS) PIPELINE
-// ══════════════════════════════════════════════════
-function quickTTS(text) {
-  document.getElementById('ttsInput').value = text;
-  speakText();
-}
-
-async function speakText() {
-  const text = document.getElementById('ttsInput').value.trim();
-  if (!text) { toast('Kolom input string teks kosong!', 'err'); return; }
-
-  try {
-    const res = await fetch('/api/tts', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ text })
-    });
-    const data = await res.json();
-    if (data.error) { toast(data.error, 'err'); return; }
-    if (data.missing.length > 0) {
-      toast(`Perhatian: Berkas fonem belum terakuisisi untuk kata: ${data.missing.join(', ')}`, 'info');
+      toast(`Deteksi Berhasil: "${data.recognized}"`, 'ok');
     }
-    playQueue(data.words, data.audio_urls, data.missing);
-  } catch(e) {
-    toast('Error pemrosesan sistem TTS: ' + e.message, 'err');
-  }
-}
 
-function playQueue(words, urls, missing) {
-  ttsStop = false;
-  ttsIdx  = 0;
-  document.getElementById('ttsStopBtn').disabled = false;
+    // ══════════════════════════════════════════════════
+    //  TEXT-TO-SPEECH (TTS) PIPELINE
+    // ══════════════════════════════════════════════════
+    function quickTTS(text) {
+      document.getElementById('ttsInput').value = text;
+      speakText();
+    }
 
-  const queue = document.getElementById('wordQueue');
-  queue.innerHTML = words.map((w, i) => {
-    const cls = missing.includes(w) ? 'missing' : '';
-    return `<div class="word-chip ${cls}" id="wc-${i}">${w}</div>`;
-  }).join('');
+    async function speakText() {
+      const text = document.getElementById('ttsInput').value.trim();
+      if (!text) { toast('Kolom input string teks kosong!', 'err'); return; }
 
-  function playNext() {
-    if (ttsStop || ttsIdx >= words.length) {
+      try {
+        const res = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const data = await res.json();
+        if (data.error) { toast(data.error, 'err'); return; }
+        if (data.missing.length > 0) {
+          toast(`Perhatian: Berkas fonem belum terakuisisi untuk kata: ${data.missing.join(', ')}`, 'info');
+        }
+        playQueue(data.words, data.audio_urls, data.missing);
+      } catch (e) {
+        toast('Error pemrosesan sistem TTS: ' + e.message, 'err');
+      }
+    }
+
+    function playQueue(words, urls, missing) {
+      ttsStop = false;
+      ttsIdx = 0;
+      document.getElementById('ttsStopBtn').disabled = false;
+
+      const queue = document.getElementById('wordQueue');
+      queue.innerHTML = words.map((w, i) => {
+        const cls = missing.includes(w) ? 'missing' : '';
+        return `<div class="word-chip ${cls}" id="wc-${i}">${w}</div>`;
+      }).join('');
+
+      function playNext() {
+        if (ttsStop || ttsIdx >= words.length) {
+          document.getElementById('ttsStopBtn').disabled = true;
+          document.getElementById('ttsProgress').textContent = 'Sintesis Akustik Selesai ✓';
+          return;
+        }
+        const i = ttsIdx;
+        const w = words[i];
+        const url = urls[i];
+
+        document.getElementById('ttsProgress').textContent = `Memutar Jalur [${i + 1} / ${words.length}]: ${w.toUpperCase()}`;
+        document.querySelectorAll('.word-chip').forEach((c, j) => {
+          if (j < i) c.className = 'word-chip done';
+          if (j === i) c.className = 'word-chip playing';
+          if (j > i) c.className = 'word-chip';
+        });
+
+        if (missing.includes(w)) {
+          toast(`Aliran sinyal fonem "${w}" absen, melompati jalur pemutaran`, 'info');
+          ttsIdx++;
+          setTimeout(playNext, 300);
+          return;
+        }
+
+        const audio = new Audio(url);
+        audio.onended = () => {
+          document.getElementById(`wc-${i}`)?.classList.remove('playing');
+          ttsIdx++;
+          setTimeout(playNext, 120);
+        };
+        audio.onerror = () => {
+          toast(`File binary instrumen "${w}" korup/hilang`, 'err');
+          ttsIdx++;
+          setTimeout(playNext, 200);
+        };
+        audio.play().catch(e => {
+          toast(`Gagal memicu audio driver untuk "${w}"`, 'err');
+          ttsIdx++;
+          setTimeout(playNext, 200);
+        });
+      }
+      playNext();
+    }
+
+    function stopTTS() {
+      ttsStop = true;
       document.getElementById('ttsStopBtn').disabled = true;
-      document.getElementById('ttsProgress').textContent = 'Sintesis Akustik Selesai ✓';
-      return;
-    }
-    const i = ttsIdx;
-    const w = words[i];
-    const url = urls[i];
-
-    document.getElementById('ttsProgress').textContent = `Memutar Jalur [${i+1} / ${words.length}]: ${w.toUpperCase()}`;
-    document.querySelectorAll('.word-chip').forEach((c,j) => {
-      if (j < i) c.className = 'word-chip done';
-      if (j === i) c.className = 'word-chip playing';
-      if (j > i) c.className = 'word-chip';
-    });
-
-    if (missing.includes(w)) {
-      toast(`Aliran sinyal fonem "${w}" absen, melompati jalur pemutaran`, 'info');
-      ttsIdx++;
-      setTimeout(playNext, 300);
-      return;
+      document.getElementById('ttsProgress').textContent = 'Eksekusi pemutaran dihentikan paksa';
     }
 
-    const audio = new Audio(url);
-    audio.onended = () => {
-      document.getElementById(`wc-${i}`)?.classList.remove('playing');
-      ttsIdx++;
-      setTimeout(playNext, 120);
-    };
-    audio.onerror = () => {
-      toast(`File binary instrumen "${w}" korup/hilang`, 'err');
-      ttsIdx++;
-      setTimeout(playNext, 200);
-    };
-    audio.play().catch(e => {
-      toast(`Gagal memicu audio driver untuk "${w}"`, 'err');
-      ttsIdx++;
-      setTimeout(playNext, 200);
-    });
-  }
-  playNext();
-}
-
-function stopTTS() {
-  ttsStop = true;
-  document.getElementById('ttsStopBtn').disabled = true;
-  document.getElementById('ttsProgress').textContent = 'Eksekusi pemutaran dihentikan paksa';
-}
-
-// ══════════════════════════════════════════════════
-//  MONITORING TAB MANAGEMENT
-// ══════════════════════════════════════════════════
-async function loadVocab() {
-  const tbody = document.getElementById('vocabBody');
-  tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);padding:1.5rem; text-align: center; font-family: var(--font-mono)">Menghubungkan ke API basis data lokal…</td></tr>';
-  try {
-    const data = await fetch('/api/vocabulary').then(r=>r.json());
-    const cats = {
-      "Bilangan": ["nol","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh"],
-      "Aritmatika": ["tambah","kurang","kali","bagi"],
-      "Identitas": ["cleosa","zelda","avrillya"],
-    };
-    tbody.innerHTML = '';
-    data.forEach(item => {
-      const cat = Object.entries(cats).find(([_,ws]) => ws.includes(item.word))?.[0] || '-';
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
+    // ══════════════════════════════════════════════════
+    //  MONITORING TAB MANAGEMENT
+    // ══════════════════════════════════════════════════
+    async function loadVocab() {
+      const tbody = document.getElementById('vocabBody');
+      tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);padding:1.5rem; text-align: center; font-family: var(--font-mono)">Menghubungkan ke API basis data lokal…</td></tr>';
+      try {
+        const data = await fetch('/api/vocabulary').then(r => r.json());
+        const cats = {
+          "Bilangan": ["nol", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh"],
+          "Aritmatika": ["tambah", "kurang", "kali", "bagi"],
+          "Identitas": ["cleosa", "zelda", "avrillya"],
+          "Alfabet": ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
+          "Frasa": [
+            "sama-dengan", "sayang", "semuanya",
+            "1+1=2", "10+2=5", "123sayangsemuanya",
+            "klasifikasidatalatihdiprosesmenggunakanalgoritmasvm",
+            "mahasiswateknikinformatikasedangmelakukanpengujianaplikasiweb"
+          ],
+        };
+        tbody.innerHTML = '';
+        data.forEach(item => {
+          const cat = Object.entries(cats).find(([_, ws]) => ws.includes(item.word))?.[0] || '-';
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
         <td style="font-weight:700; color: var(--text)">${item.word}</td>
         <td style="font-family:var(--font-mono); color: var(--accent2)">${item.symbol}</td>
         <td style="color:var(--muted);font-size:.85rem; font-weight: 500">${cat}</td>
         <td>
           ${item.templates > 0
-            ? `<span class="badge-count">${item.templates} Sampel</span>`
-            : `<span class="badge-no" style="color: var(--muted)">0 — Berkas Absen</span>`}
+              ? `<span class="badge-count">${item.templates} Sampel</span>`
+              : `<span class="badge-no" style="color: var(--muted)">0 — Berkas Absen</span>`}
         </td>
         <td>${item.has_audio
-          ? `<span class="badge-ok">✓ Terintegrasi</span>`
-          : `<span class="badge-no" style="color: #ef4444">✗ Belum Siap</span>`}
+              ? `<span class="badge-ok">✓ Terintegrasi</span>`
+              : `<span class="badge-no" style="color: #ef4444">✗ Belum Siap</span>`}
         </td>
         <td style="text-align: center;">
           <button class="btn btn-danger" onclick="resetWord('${item.word}')">Reset Log</button>
         </td>
       `;
-      tbody.appendChild(tr);
+          tbody.appendChild(tr);
+        });
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="6" style="color:var(--red); text-align: center; font-family: var(--font-mono)">Gagal memuat status database: ${e.message}</td></tr>`;
+      }
+    }
+
+    async function resetWord(word) {
+      if (!confirm(`Apakah Anda yakin ingin mengosongkan seluruh data latih untuk kosakata "${word}"?`)) return;
+      await fetch('/api/reset/' + word, { method: 'DELETE' });
+      toast(`Repositori kata "${word}" berhasil dibersihkan`, 'info');
+      loadVocab(); buildGrid();
+    }
+
+    // ══════════════════════════════════════════════════
+    //  INITIALIZATION
+    // ══════════════════════════════════════════════════
+    window.addEventListener('DOMContentLoaded', () => {
+      buildGrid();
     });
-  } catch(e) {
-    tbody.innerHTML = `<tr><td colspan="6" style="color:var(--red); text-align: center; font-family: var(--font-mono)">Gagal memuat status database: ${e.message}</td></tr>`;
-  }
-}
-
-async function resetWord(word) {
-  if (!confirm(`Apakah Anda yakin ingin mengosongkan seluruh data latih untuk kosakata "${word}"?`)) return;
-  await fetch('/api/reset/' + word, { method: 'DELETE' });
-  toast(`Repositori kata "${word}" berhasil dibersihkan`, 'info');
-  loadVocab(); buildGrid();
-}
-
-// ══════════════════════════════════════════════════
-//  INITIALIZATION
-// ══════════════════════════════════════════════════
-window.addEventListener('DOMContentLoaded', () => {
-  buildGrid();
-});
-</script>
+  </script>
 </body>
+
 </html>
